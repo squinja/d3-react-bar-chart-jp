@@ -1,95 +1,78 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import * as d3 from "d3";
+import XAxis, { YAxis } from "./YAxis";
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const data = [
+    { name: "宮崎", score: 36 },
+    { name: "青木", score: 68 },
+    { name: "川端", score: 72 },
+    { name: "武雄", score: 87 },
+    { name: "清水", score: 84 },
+  ];
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const width = 800;
+  const height = 400;
+  const margin = { top: 60, right: 30, bottom: 60, left: 60 };
+  const innerWidth = width - margin.right - margin.left;
+  const innerHeight = height - margin.top - margin.bottom;
+
+  const xScale = d3
+    .scaleBand()
+    .domain(data.map((d) => d.name))
+    .range([0, innerWidth])
+    .padding(0.1);
+
+  const yScale = d3.scaleLinear().domain([0, 100]).range([0, innerHeight]);
+
+  return (
+    <div>
+      <main>
+        <svg width={width} height={height}>
+          <text
+            x={innerWidth / 2 + 30}
+            y={25}
+            textAnchor="middle"
+            fontSize={24}
+            fill="white"
           >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+            生徒たちのテストスコア
+          </text>
+          <g
+            transform={`translate(${margin.left}, ${margin.top})`}
+            width={innerWidth}
+            height={innerHeight}
+          >
+            <YAxis
+              yScale={yScale}
+              innerHeight={innerHeight}
+              innerWidth={innerWidth}
             />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
+            {data.map((d, i) => (
+              <g key={i}>
+                <rect
+                  x={xScale(d.name)}
+                  y={innerHeight - yScale(d.score)}
+                  fill="cornflowerblue"
+                  width={xScale.bandwidth()}
+                  height={yScale(d.score)}
+                  stroke="lightblue"
+                  strokeWidth={1.5}
+                  role="tooltip"
+                />
+                <text
+                  x={xScale(d.name) + xScale.bandwidth() / 2}
+                  y={innerHeight + 40}
+                  textAnchor="middle"
+                  fontSize={24}
+                  fill="white"
+                >
+                  {d.name}
+                </text>
+              </g>
+            ))}
+          </g>
+        </svg>
       </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
