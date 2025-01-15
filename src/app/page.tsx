@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import XAxis, { YAxis } from "./YAxis";
+import { YAxis } from "./YAxis";
 
 export default function Home() {
   const data = [
