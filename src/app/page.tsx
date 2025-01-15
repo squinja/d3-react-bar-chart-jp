@@ -60,7 +60,7 @@ export default function Home() {
                   role="tooltip"
                 />
                 <text
-                  x={xScale(d.name) + xScale.bandwidth() / 2}
+                  x={xScale(d.name) ?? 0 + xScale.bandwidth() / 2}
                   y={innerHeight + 40}
                   textAnchor="middle"
                   fontSize={24}
